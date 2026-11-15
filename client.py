@@ -1,10 +1,6 @@
-from rooms import (
-    show_all_rooms,
-    show_room_details,
-    add_room,
-    update_room, change_room_status)
+from rooms import (show_all_rooms,show_room_details,add_room,update_room, change_room_status)
 from storage import save_data
-from bookings import show_all_bookings, show_booking_details
+from bookings import show_all_bookings, show_booking_details, show_customer_bookings, show_booking_by_date
 
 def show_menu():
     print("\n========== ESCAPE ZONE ==========")
@@ -85,6 +81,8 @@ def manage_bookings(bookings):
         print("\n========== BOOKING MANAGEMENT ==========")
         print("1. Show all bookings")
         print("2. Search booking by ID")
+        print("3. Show customer bookings")
+        print("4. Show bookings by date")
         print("0. Back to main menu")
         print("========================================")
 
@@ -97,5 +95,13 @@ def manage_bookings(bookings):
             booking_id = input("Enter booking ID: ").strip().upper()
             show_booking_details(bookings, booking_id)
 
+        elif choice == "3":
+            customer_name = input("Enter customer name: ").strip()
+            show_customer_bookings(bookings,customer_name)
+            
+        elif choice == "4":
+            booking_date = input("Enter date (YYYY-MM-DD): ").strip()
+            show_booking_by_date(bookings, booking_date)
+             
         elif choice != "0":
             print("Invalid option. Please try again.")

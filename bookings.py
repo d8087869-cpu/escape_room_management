@@ -4,16 +4,8 @@ def show_all_bookings(bookings):
         return
     print("\n========== ALL BOOKINGS ==========")
     for booking in bookings:
-        print(
-            f'{booking["booking_id"]} | '
-            f'{booking["customer_name"]} | '
-            f'{booking["room_id"]} | '
-            f'{booking["booking_date"]} | '
-            f'{booking["start_time"]} | '
-            f'{booking["status"]}'
-        )
-    print("==================================")
-
+        show_booking_summary(booking)
+    print("===================================")
 
 
 def find_booking(bookings, booking_id):
@@ -39,3 +31,38 @@ def show_booking_details(bookings, booking_id):
     print(f'Status: {booking["status"]}')
     print(f'Cancellation fee: {booking["cancellation_fee"]}')
     print("=====================================")
+    
+    
+def show_booking_summary(booking):
+    print(
+        f'{booking["booking_id"]} | '
+        f'{booking["customer_name"]} | '
+        f'{booking["room_id"]} | '
+        f'{booking["booking_date"]} | '
+        f'{booking["start_time"]} | '
+        f'{booking["status"]}')
+    
+    
+def show_customer_bookings(bookings, customer_name):
+    found = False
+    print("\n========== CUSTOMER BOOKINGS ===========")
+    for booking in bookings:
+        if booking["customer_name"].lower() == customer_name.lower():
+            show_booking_summary(booking)
+            found = True
+    if not found:
+        print("No bookings found for this customer.")
+    print("=======================================")
+    
+
+def show_booking_by_date(bookings, booking_date):
+    found = False
+    
+    print("\n========== BOOKINGS BY DATE ==========")
+    for booking in bookings:
+        if booking["booking_date"] == booking_date:
+            show_booking_summary(booking)
+            found = True
+    if not found:
+        print("No bookings found for this date.")
+    print("======================================")
