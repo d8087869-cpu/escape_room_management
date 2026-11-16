@@ -1,6 +1,6 @@
 from rooms import (show_all_rooms,show_room_details,add_room,update_room, change_room_status)
 from storage import save_data
-from bookings import show_all_bookings, show_booking_details, show_customer_bookings, show_booking_by_date
+from bookings import show_all_bookings, show_booking_details, show_customer_bookings, show_booking_by_date, create_booking
 
 def show_menu():
     print("\n========== ESCAPE ZONE ==========")
@@ -23,7 +23,7 @@ def run_menu(rooms, bookings):
             manage_rooms(rooms)
 
         elif choice == "2":
-            manage_bookings(bookings)
+            manage_bookings(rooms, bookings)
 
         elif choice == "3":
             print("Reports - Coming soon")
@@ -74,7 +74,7 @@ def manage_rooms(rooms):
 
 
 
-def manage_bookings(bookings):
+def manage_bookings(rooms, bookings):
     choice = ""
 
     while choice != "0":
@@ -83,6 +83,7 @@ def manage_bookings(bookings):
         print("2. Search booking by ID")
         print("3. Show customer bookings")
         print("4. Show bookings by date")
+        print("5. Create new bookings")
         print("0. Back to main menu")
         print("========================================")
 
@@ -102,6 +103,10 @@ def manage_bookings(bookings):
         elif choice == "4":
             booking_date = input("Enter date (YYYY-MM-DD): ").strip()
             show_booking_by_date(bookings, booking_date)
+            
+        elif choice == "5":
+            if create_booking(rooms, bookings):
+                save_data("bookings.json", bookings)
              
         elif choice != "0":
             print("Invalid option. Please try again.")
