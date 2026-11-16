@@ -1,6 +1,6 @@
 from rooms import (show_all_rooms,show_room_details,add_room,update_room, change_room_status)
 from storage import save_data
-from bookings import show_all_bookings, show_booking_details, show_customer_bookings, show_booking_by_date, create_booking
+from bookings import show_all_bookings, show_booking_details, show_customer_bookings, show_booking_by_date, create_booking, update_booking, cancel_booking
 
 def show_menu():
     print("\n========== ESCAPE ZONE ==========")
@@ -84,6 +84,8 @@ def manage_bookings(rooms, bookings):
         print("3. Show customer bookings")
         print("4. Show bookings by date")
         print("5. Create new bookings")
+        print("6. Update booking")
+        print("7. Cancel booking")
         print("0. Back to main menu")
         print("========================================")
 
@@ -106,6 +108,14 @@ def manage_bookings(rooms, bookings):
             
         elif choice == "5":
             if create_booking(rooms, bookings):
+                save_data("bookings.json", bookings)
+        
+        elif choice == "6":
+            if update_booking(rooms, bookings):
+                save_data("bookings.json", bookings)
+                
+        elif choice == "7":
+            if cancel_booking(bookings):
                 save_data("bookings.json", bookings)
              
         elif choice != "0":

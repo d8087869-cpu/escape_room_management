@@ -78,7 +78,7 @@ def validate_booking_time(booking_date, start_time, duration):
             f"{booking_date} {start_time}",
             "%Y-%m-%d %H:%M")
     except ValueError:
-        print("Invalid date or toime format")
+        print("Invalid date or time format")
         return False
     
     if start_datetime < datetime.now():
@@ -103,7 +103,7 @@ def validate_booking_time(booking_date, start_time, duration):
 
 
 
-def check_room_availability(rooms, bookings, room_id, booking_date, start_time, duration):
+def check_room_availability(rooms, bookings, room_id, booking_date, start_time, duration, exclude_booking_id=None):
     new_start = datetime.strptime(
         f"{booking_date} {start_time}",
         "%Y-%m-%d %H:%M")
@@ -111,6 +111,9 @@ def check_room_availability(rooms, bookings, room_id, booking_date, start_time, 
     new_end = new_start + timedelta(minutes=duration + 15)
 
     for booking in bookings:
+        if booking["booking_id"] == exclude_booking_id:
+            continue
+
         if booking["room_id"] != room_id:
             continue
         
@@ -242,3 +245,105 @@ def get_next_booking_id(bookings):
     return f"B{max_id + 1:03d}"#B זה אות קבועה שזה המזהה שלנו עבור ההזמנה 
 #והמקס זה במביא לי את המספר הבא שלא אכנס להזמנה הקודמת 
 #:03d - מציג מספר שלם עם 3 ספרות 
+
+
+def update_booking(rooms, bookings):
+    print("\n========== UPDATE BOOKING ==========")
+    booking_id = input("Enter booking ID: ").strip().upper()
+    booking = find_booking(bookings, booking_id)
+    if booking is None:
+        print("booking not found.")
+        return False
+
+    if booking["status"] != "Active":
+        print("cannot update a cancelled booking")
+        return False
+    room = find_room(rooms, booking["room_id"])
+    
+    if room is None:
+        print("room not found")
+        return False
+    if not room["is_active"]:
+        print("room is inactive")
+        return False
+
+    booking_date = input("New booking date (YYYY-MM-DD): ").strip()
+    start_time = input("New start time (HH:MM): ").strip()
+    players = get_positive_int("New number of players: ")
+    
+    if players < room["min_players"] or players > room["max_players"]:
+        print("number of players or not allowd for this room")
+        return False
+    
+    if not validate_booking_time(
+        booking_date,start_time, room["duration"]
+    ):
+        return False
+   
+    if not check_room_availability(
+       rooms,
+       bookings,
+       booking["room_id"],
+       booking_date,
+       start_time,
+       room["duration"],
+       booking_id
+   ):
+       return False
+    
+    total_price = calculate_booking_price(
+        room, players, booking_date)
+    
+    booking["booking_date"] = booking_date
+    booking["start_time"] = start_time
+    booking["players"] = players
+    booking["total_price"] = total_price
+    
+    print("\nBooking update successfully!")
+    print(f"Booking ID: {booking_id}")
+    print(f"New total price: {total_price}")
+    
+    return True
+
+
+
+
+def cancel_booking(bookings):
+    print("============== CANCEL BOOKING =============")
+    booking_id = input("Enter booking ID: ").strip().upper()
+    booking = find_booking(bookings, booking_id)
+    
+    if booking is None:
+        print("booking not found")
+        return False
+    
+    if booking["status"] == "Cancelled":
+        print("this booking is alrady cancelled.")
+        return False
+    
+    booking_datetime = datetime.strptime(
+        f'{booking["booking_date"]} {booking["start_time"]}',
+        "%Y-%m-%d %H:%M")
+    current_datetime = datetime.now()
+    time_remaining = booking_datetime - current_datetime
+    hours_remaining = time_remaining.total_seconds()/3600
+    if hours_remaining <=0:
+        print("cannot cancel a booking after it start time.")
+        return False
+    
+    if hours_remaining > 24:
+        cancelltion_fee = 0 
+    elif hours_remaining >= 6:
+        cancelltion_fee = booking["total_price"] * 0.25
+    else:
+        cancelltion_fee = booking["total_price"] * 0.50
+        
+    booking["status"] = "Cancelled"
+    booking["cancelltion_fee"] = round(cancelltion_fee, 2)
+    
+    print("\nBooking cancelled successfully!")
+    print(f"Booking ID: {booking_id}")
+    print(f"Orginal price: {booking['total_price']}")
+    print(f"Cancellation fee: {booking['cancelltion_fee']}")
+    
+    return True
