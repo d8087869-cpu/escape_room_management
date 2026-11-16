@@ -48,5 +48,15 @@
         "max_players": 20,
         "price_per_player": 100.0,
         "is_active": false
+    },
+    {
+        "room_id": "R006",
+        "name": "Cod",
+        "difficulty": "Hard",
+        "duration": 90,
+        "min_players": 1,
+        "max_players": 10,
+        "price_per_player": 88.0,
+        "is_active": true
     }
 ]

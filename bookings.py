@@ -239,4 +239,6 @@ def get_next_booking_id(bookings):
         if number > max_id:
             max_id = number
 
-    return f"B{max_id + 1:03d}"
+    return f"B{max_id + 1:03d}"#B זה אות קבועה שזה המזהה שלנו עבור ההזמנה 
+#והמקס זה במביא לי את המספר הבא שלא אכנס להזמנה הקודמת 
+#:03d - מציג מספר שלם עם 3 ספרות 
