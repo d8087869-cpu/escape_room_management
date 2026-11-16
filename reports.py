@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+from rooms import find_room
+
 def show_active_bookings_count(bookings):
     active_bookings = 0
     for booking in bookings:
@@ -90,3 +93,55 @@ def show_bookings_per_room(rooms, bookings):
         )
 
     print("=======================================")
+    
+
+def show_room_occupancy(rooms, bookings):
+    room_id = input("Enter room ID: ").strip().upper()
+
+    room = find_room(rooms, room_id)
+
+    if room is None:
+        print("Room not found.")
+        return
+
+    booking_date = input("Enter date (YYYY-MM-DD): ")
+
+    try:
+        date = datetime.strptime(booking_date, "%Y-%m-%d")
+    except ValueError:
+        print("Invalid date format.")
+        return
+
+    occupied_minutes = 0
+
+    for booking in bookings:
+        if (booking["room_id"] == room_id
+                and booking["booking_date"] == booking_date
+                and booking["status"] == "Active"):
+
+            start_time = datetime.strptime(
+                f"{booking_date} {booking['start_time']}",
+                "%Y-%m-%d %H:%M")
+
+            end_time = start_time + timedelta(
+                minutes=room["duration"] + 15)
+
+            closing_time = start_time.replace(
+                hour=22, minute=0)
+
+            if end_time > closing_time:
+                end_time = closing_time
+
+            occupied_minutes += (
+                end_time - start_time
+            ).total_seconds() / 60
+
+    occupancy = (occupied_minutes / 720) * 100
+
+    print("\n========== ROOM OCCUPANCY ==========")
+    print(f'Room: {room["name"]}')
+    print(f"Room ID: {room_id}")
+    print(f"Date: {booking_date}")
+    print(f"Occupied minutes: {occupied_minutes}")
+    print(f"Occupancy: {occupancy:.2f}%")
+    print("====================================")

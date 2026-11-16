@@ -1,7 +1,7 @@
 from rooms import show_all_rooms,show_room_details,add_room,update_room, change_room_status
 from storage import save_data
 from bookings import show_all_bookings, show_booking_details, show_customer_bookings, show_booking_by_date, create_booking, update_booking, cancel_booking
-from reports import show_active_bookings_count,show_cancelled_bookings_count,show_total_revenue,show_total_cancellation_fees ,show_most_popular_room, show_bookings_per_room
+from reports import show_active_bookings_count,show_cancelled_bookings_count,show_total_revenue,show_total_cancellation_fees ,show_most_popular_room, show_bookings_per_room, show_room_occupancy
 
 
 
@@ -136,7 +136,8 @@ def manage_reports(rooms, bookings):
         print("3. Total revenue")
         print("4. Total cancellation fees")
         print("5. Most popular room")
-        print("6. Bookings per room")        
+        print("6. Bookings per room")  
+        print("7. Show room occupancy")      
         print("0. Back to main menu")
         print("=============================")
 
@@ -158,7 +159,10 @@ def manage_reports(rooms, bookings):
             show_most_popular_room(rooms, bookings)
 
         elif choice == "6":
-            show_bookings_per_room(rooms, bookings)            
+            show_bookings_per_room(rooms, bookings)     
+            
+        elif choice == "7":
+            show_room_occupancy(rooms, bookings)      
 
         elif choice != "0":
             print("Invalid option. Please try again.")
